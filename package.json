@@ -1,0 +1,22 @@
+{
+    "name": "ai-intent-router",
+    "version": "1.0.0",
+    "description": "Intent-based AI router in Node.js with specialized personas",
+    "type": "module",
+    "bin": {
+        "ai-intent-router": "./src/cli.js",
+        "ai-intent-router-api": "./src/server.js"
+    },
+    "scripts": {
+        "start": "node src/server.js",
+        "cli": "node src/cli.js",
+        "test": "node --test"
+    },
+    "engines": {
+        "node": ">=20"
+    },
+    "dependencies": {
+        "dotenv": "^16.4.7",
+        "openai": "^4.86.1"
+    }
+}
