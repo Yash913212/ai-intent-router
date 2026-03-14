@@ -11,9 +11,9 @@ Simple Node.js app that:
 
    npm install
 
-2. Create .env file from .env.example and add your OpenAI key
+2. Create .env file from .env.example and add your Groq API key
 
-   OPENAI_API_KEY=your_key_here
+   GROQ_API_KEY=your_api_key_here
 
 3. Start API server
 

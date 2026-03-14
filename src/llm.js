@@ -1,32 +1,37 @@
 import "dotenv/config";
-import OpenAI from "openai";
 
-export class OpenAILLMClient {
-    constructor({ model = process.env.OPENAI_MODEL || "gpt-4.1-mini", apiKey = process.env.OPENAI_API_KEY } = {}) {
+export class OllamaLLMClient {
+    constructor({ model = process.env.OLLAMA_MODEL || "mistral", baseUrl = process.env.OLLAMA_BASE_URL || "http://localhost:11434" } = {}) {
         this.model = model;
-        this.client = new OpenAI({ apiKey });
+        this.baseUrl = baseUrl;
     }
 
     async complete({ systemPrompt, userMessage, forceJson = false }) {
-        const response = await this.client.chat.completions.create({
+        const payload = {
             model: this.model,
-            response_format: forceJson ? { type: "json_object" } : undefined,
             messages: [
                 { role: "system", content: systemPrompt },
                 { role: "user", content: userMessage }
             ],
-            temperature: forceJson ? 0.1 : 0.4
-        });
+            stream: false
+        };
 
-        if (!response || !Array.isArray(response.choices) || response.choices.length === 0) {
+        try {
+            const response = await fetch(`${this.baseUrl}/api/chat`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                throw new Error(`Ollama error: ${response.statusText}`);
+            }
+
+            const result = await response.json();
+            return result.message?.content || "";
+        } catch (error) {
+            console.error("Ollama request failed:", error.message);
             return "";
         }
-
-        const firstChoice = response.choices[0];
-        if (!firstChoice || !firstChoice.message || typeof firstChoice.message.content !== "string") {
-            return "";
-        }
-
-        return firstChoice.message.content;
     }
 }

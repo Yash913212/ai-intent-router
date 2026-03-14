@@ -1,6 +1,6 @@
 import path from "node:path";
 
-import { OpenAILLMClient } from "./llm.js";
+import { OllamaLLMClient } from "./llm.js";
 import { appendRouteLog } from "./logging.js";
 import { CLASSIFIER_PROMPT, CLARIFYING_QUESTION, SUPPORTED_INTENTS, SYSTEM_PROMPTS } from "./prompts.js";
 
@@ -64,7 +64,7 @@ export async function classifyIntent(message, { llmClient, confidenceThreshold =
         return { intent: override.intent, confidence: 1.0 };
     }
 
-    const client = llmClient || new OpenAILLMClient();
+    const client = llmClient || new OllamaLLMClient();
     const rawResponse = await client.complete({
         systemPrompt: CLASSIFIER_PROMPT,
         userMessage: message,
@@ -89,7 +89,7 @@ export async function routeRequest(message, options = {}) {
 
     const override = extractOverride(message);
     const effectiveMessage = override ? override.cleanedMessage : message;
-    const client = llmClient || new OpenAILLMClient();
+    const client = llmClient || new OllamaLLMClient();
 
     let classification;
     if (intent && typeof intent === "object") {

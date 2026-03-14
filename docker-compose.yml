@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  ai-intent-router:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - OLLAMA_BASE_URL=http://host.docker.internal:11434
+      - OLLAMA_MODEL=${OLLAMA_MODEL:-mistral}
+      - AI_INTENT_ROUTER_CONFIDENCE_THRESHOLD=${AI_INTENT_ROUTER_CONFIDENCE_THRESHOLD:-0.70}
+      - AI_INTENT_ROUTER_LOG_PATH=${AI_INTENT_ROUTER_LOG_PATH:-route_log.jsonl}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./:/app
+    restart: unless-stopped
